@@ -1,0 +1,47 @@
+[package]
+name = "stm32f072-usb-test"
+version = "0.1.0"
+authors = ["Mike Panetta <panetta.mike@gmail.com>"]
+edition = "2018"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m = "0.6.0"
+cortex-m-rt = "0.6.8"
+cortex-m-semihosting = "0.3.3"
+panic-halt = "0.2.0"
+panic-semihosting = "0.5.2"
+embedded-hal = "0.2.3"
+usb-device = "0.2.1"
+
+[dependencies.bare-metal]
+version = "0.2.4"
+features = [ "const-fn" ]
+
+[dependencies.stm32f0]
+version = "0.7.1"
+features = ["stm32f0x2", "rt"]
+
+[dependencies.stm32f0xx-hal]
+version = "0.14.1"
+features = [ "stm32f072", "rt" ]
+
+[dependencies.stm32-usbd]
+version = "0.2.1"
+features = [ "stm32f072xx" ]
+
+[dependencies.cortex-m-rtfm]
+version = "0.4.3"
+
+[dependencies.usbd-serial]
+git = "https://github.com/mvirkkunen/usbd-serial"
+
+
