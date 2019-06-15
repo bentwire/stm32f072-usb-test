@@ -40,8 +40,9 @@ const APP: () = {
 
         *USB_BUS = Some(UsbBus::new(device.USB, (usb_dm, usb_dp)));
 
-        let serial = usbd_serial::CdcAcmClass::new(USB_BUS.as_ref().unwrap(), 64);
         let hid = hid::hid::HidClass::new(USB_BUS.as_ref().unwrap(), true, &hiddesc::desc);
+        let serial = usbd_serial::CdcAcmClass::new(USB_BUS.as_ref().unwrap(), 64);
+
 
         let usb_dev =
             UsbDeviceBuilder::new(USB_BUS.as_ref().unwrap(), UsbVidPid(0x5824, 0x27dd))
@@ -49,6 +50,10 @@ const APP: () = {
                 .product("Composite Device")
                 .serial_number("TEST")
                 .device_class(0x00)
+                .max_packet_size_0(64)
+                .self_powered(false)
+                .max_power(500)
+                .supports_remote_wakeup(false)
                 .build();
 
         USB_DEV = usb_dev;
@@ -67,7 +72,7 @@ fn usb_poll<B: bus::UsbBus>(
     serial: &mut usbd_serial::CdcAcmClass<'static, B>,
     hid: &mut hid::hid::HidClass<'static, B>,
 ) {
-    if !usb_dev.poll(&mut [serial, hid]) {
+    if !usb_dev.poll(&mut [hid, serial]) {
         return;
     }
 

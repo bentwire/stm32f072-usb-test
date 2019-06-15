@@ -119,24 +119,30 @@ impl<B: UsbBus> UsbClass<B> for HidClass<'_, B> {
         let length = req.length;
         let index = req.index;
 
-        if !(req.recipient == control::Recipient::Interface && (req.index & 0x00ff) == u8::from(self.hid_if) as u16) {
-            return
-        }
-
-//        match reqt {
-//            control::RequestType::Standard => match req.request {
-//                control::Request::GET_DESCRIPTOR => {
-//                    if value >> 8 != 0x22 { return }
-//                    xfer.accept( |data | {
-//                        let offs = (index >> 8) as usize;
-//                        data.copy_from_slice(self.report_desc.desc);
-//                        Ok(length as usize)
-//                    }).ok();
-//                },
-//                _ => { xfer.reject().ok(); }
-//            }
-//            _ => { xfer.reject().ok(); }
+//        if !((req.recipient == control::Recipient::Interface) && ((req.index & 0x00ff) == u8::from(self.hid_if) as u16)) {
+//            return
 //        }
+
+        match reqt {
+            control::RequestType::Standard => match req.request {
+                control::Request::GET_DESCRIPTOR => {
+                    let desc_type = (value >> 8) as u8;
+                    let desc_index = (value & 0x00ff) as u8;
+
+                    if desc_type == 0x22 {
+                        xfer.accept(|data| {
+                            let data_len = data.len();
+                            data[0..length as usize].copy_from_slice(&self.report_desc.desc[0..length as usize]);
+                            Ok(length as usize)
+                        }).ok();
+                    } else {
+                        return
+                    }
+                },
+                _ => { return }
+            }
+            _ => { return }
+        }
     }
 
 //    fn endpoint_setup(&mut self, addr: EndpointAddress) {
