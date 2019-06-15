@@ -1,15 +1,11 @@
-#![allow(unused_imports)]
+//#![allow(unused_imports)]
 #![allow(dead_code)]
-#![allow(unused)]
+#![allow(unused_variables)]
 
-use core::convert::TryInto;
-use core::mem;
 use usb_device::class_prelude::*;
 use usb_device::Result;
 
 use super::reportdesc::*;
-use core::ptr::null;
-use core::borrow::Borrow;
 
 // USB HID Class bInterfaceClass
 const USB_CLASS_HID:                    u8 = 0x03;
@@ -46,7 +42,7 @@ impl<'a, B: UsbBus> HidClass<'a, B> {
             hid_if,
             in_report_ep,
             out_report_ep,
-            report_desc: HidReportDescriptor { desc: desc.borrow() },
+            report_desc: HidReportDescriptor { desc },
         }
     }
 
@@ -112,6 +108,7 @@ impl<B: UsbBus> UsbClass<B> for HidClass<'_, B> {
 //
     fn control_out(&mut self, xfer: ControlOut<B>) {
         let req = xfer.request();
+        // TODO - Fill this out with all the Class/Vendor requests for HID
     }
 
     fn control_in(&mut self, xfer: ControlIn<B>) {
@@ -146,6 +143,7 @@ impl<B: UsbBus> UsbClass<B> for HidClass<'_, B> {
             }
             _ => { return }
         }
+        // TODO - Fill this out with all the Class/Vendor requests for HID
     }
 
 //    fn endpoint_setup(&mut self, addr: EndpointAddress) {
