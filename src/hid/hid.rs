@@ -1,4 +1,7 @@
 #![allow(unused_imports)]
+#![allow(dead_code)]
+#![allow(unused)]
+
 use core::convert::TryInto;
 use core::mem;
 use usb_device::class_prelude::*;

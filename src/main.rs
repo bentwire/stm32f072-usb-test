@@ -8,9 +8,10 @@ extern crate panic_semihosting;
 mod hid;
 mod hiddesc;
 
-use usbd_serial;
+use usbd_serial::CdcAcmClass;
+use hid::HidClass;
 
-use cortex_m::asm::delay;
+//use cortex_m::asm::delay;
 use rtfm::app;
 use stm32f0xx_hal::prelude::*;
 
@@ -21,8 +22,8 @@ use usb_device::prelude::*;
 #[app(device = stm32f0xx_hal::stm32 )]
 const APP: () = {
     static mut USB_DEV: UsbDevice<'static, UsbBusType> = ();
-    static mut SERIAL: usbd_serial::CdcAcmClass<'static, UsbBusType> = ();
-    static mut HID: hid::hid::HidClass<'static, UsbBusType> = ();
+    static mut SERIAL: CdcAcmClass<'static, UsbBusType> = ();
+    static mut HID: HidClass<'static, UsbBusType> = ();
 
     #[init]
     fn init() {
@@ -40,8 +41,8 @@ const APP: () = {
 
         *USB_BUS = Some(UsbBus::new(device.USB, (usb_dm, usb_dp)));
 
-        let hid = hid::hid::HidClass::new(USB_BUS.as_ref().unwrap(), true, &hiddesc::desc);
-        let serial = usbd_serial::CdcAcmClass::new(USB_BUS.as_ref().unwrap(), 64);
+        let hid = HidClass::new(USB_BUS.as_ref().unwrap(), true, &hiddesc::DESC);
+        let serial = CdcAcmClass::new(USB_BUS.as_ref().unwrap(), 64);
 
 
         let usb_dev =
@@ -69,8 +70,8 @@ const APP: () = {
 
 fn usb_poll<B: bus::UsbBus>(
     usb_dev: &mut UsbDevice<'static, B>,
-    serial: &mut usbd_serial::CdcAcmClass<'static, B>,
-    hid: &mut hid::hid::HidClass<'static, B>,
+    serial: &mut CdcAcmClass<'static, B>,
+    hid: &mut HidClass<'static, B>,
 ) {
     if !usb_dev.poll(&mut [hid, serial]) {
         return;

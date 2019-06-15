@@ -1,4 +1,4 @@
-pub const desc: [u8; 93] = [0x05,0x01,                //Usage_Page(Generic_Desktop_ID),
+pub const DESC: [u8; 93] = [0x05,0x01,                //Usage_Page(Generic_Desktop_ID),
 0x09,0x04,                //Usage(Joystick_ID),
 0xa1,0x01,                //Collection(Clc_Application),
 0x05,0x09,                //    Usage_Page(Button_ID),
