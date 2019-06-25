@@ -11,25 +11,25 @@ extern crate stm32f0;
 mod hid;
 mod hiddesc;
 
-use usbd_serial::CdcAcmClass;
 use hid::HidClass;
+use usbd_serial::CdcAcmClass;
 
 //use cortex_m::asm::delay;
-use stm32f0xx_hal::prelude::*;
-use stm32f0xx_hal::stm32::{interrupt, Interrupt};
-use stm32f0xx_hal::adc::*;
 use stm32f0::stm32f0x2 as stm32;
 use stm32f0::stm32f0x2::dac;
+use stm32f0xx_hal::adc::*;
+use stm32f0xx_hal::prelude::*;
+use stm32f0xx_hal::stm32::{interrupt, Interrupt};
 
-use stm32_usbd::{UsbBus, UsbBusType};
-use usb_device::bus::{UsbBusAllocator};
-use usb_device::prelude::*;
 use digital_filter::DigitalFilter;
+use stm32_usbd::{UsbBus, UsbBusType};
+use usb_device::bus::UsbBusAllocator;
+use usb_device::prelude::*;
 
 use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
 
-use core::{ cell::RefCell, fmt::Write, ops::DerefMut };
+use core::{cell::RefCell, fmt::Write, ops::DerefMut};
 
 // Global peripherals
 // TODO - Move to module.
@@ -37,17 +37,18 @@ static USB_DEV: Mutex<RefCell<Option<UsbDevice<UsbBusType>>>> = Mutex::new(RefCe
 static USB_SERIAL: Mutex<RefCell<Option<CdcAcmClass<UsbBusType>>>> = Mutex::new(RefCell::new(None));
 static HID: Mutex<RefCell<Option<HidClass<UsbBusType>>>> = Mutex::new(RefCell::new(None));
 
-
 #[entry]
 fn main() -> ! {
     if let (Some(p), Some(cp)) = (stm32::Peripherals::take(), cortex_m::Peripherals::take()) {
         cortex_m::interrupt::free(|cs| {
             static mut USB_BUS: Option<UsbBusAllocator<UsbBusType>> = None;
             let mut flash = p.FLASH;
-            let mut rcc = p.RCC.configure()
-                                    .sysclk(48.mhz())
-                                    .enable_crs(p.CRS)
-                                    .freeze(&mut flash);
+            let mut rcc = p
+                .RCC
+                .configure()
+                .sysclk(48.mhz())
+                .enable_crs(p.CRS)
+                .freeze(&mut flash);
 
             let i2c: stm32::I2C1 = p.I2C1;
 
@@ -66,32 +67,34 @@ fn main() -> ! {
             let usb_dp = gpioa.pa12;
 
             // Static mut is unsafe.
-            unsafe  { USB_BUS = Some(UsbBus::new(p.USB, (usb_dm, usb_dp))); }
+            unsafe {
+                USB_BUS = Some(UsbBus::new(p.USB, (usb_dm, usb_dp)));
+            }
 
             // Static mut is unsafe.
             let hid = unsafe { HidClass::new(USB_BUS.as_ref().unwrap(), true, &hiddesc::DESC) };
             let serial = unsafe { CdcAcmClass::new(USB_BUS.as_ref().unwrap(), 64) };
-            let usb_dev =
-                UsbDeviceBuilder::new(unsafe { USB_BUS.as_ref().unwrap() }, UsbVidPid(0x5824, 0x27dd))
-                    .manufacturer("Fake company")
-                    .product("Composite Device")
-                    .serial_number("TEST")
-                    .device_class(0x00)
-                    .max_packet_size_0(64)
-                    .self_powered(false)
-                    .max_power(500)
-                    .supports_remote_wakeup(false)
-                    .build();
-
+            let usb_dev = UsbDeviceBuilder::new(
+                unsafe { USB_BUS.as_ref().unwrap() },
+                UsbVidPid(0x5824, 0x27dd),
+            )
+            .manufacturer("Fake company")
+            .product("Composite Device")
+            .serial_number("TEST")
+            .device_class(0x00)
+            .max_packet_size_0(64)
+            .self_powered(false)
+            .max_power(500)
+            .supports_remote_wakeup(false)
+            .build();
 
             *USB_DEV.borrow(cs).borrow_mut() = Some(usb_dev);
             *USB_SERIAL.borrow(cs).borrow_mut() = Some(serial);
-            *HID    .borrow(cs).borrow_mut() = Some(hid);
+            *HID.borrow(cs).borrow_mut() = Some(hid);
 
             let mut nvic: cortex_m::peripheral::NVIC = cp.NVIC;
 
             nvic.enable(interrupt::USB);
-
         });
     }
 
@@ -107,10 +110,11 @@ fn USB() {
 
 fn usb_interrupt() {
     cortex_m::interrupt::free(|cs| {
-        if let (Some(ref mut usb_dev), Some(ref mut serial), Some(ref mut hid)) = (USB_DEV.borrow(cs).borrow_mut().deref_mut(),
-                                                                                   USB_SERIAL.borrow(cs).borrow_mut().deref_mut(),
-                                                                                   HID.borrow(cs).borrow_mut().deref_mut())
-        {
+        if let (Some(ref mut usb_dev), Some(ref mut serial), Some(ref mut hid)) = (
+            USB_DEV.borrow(cs).borrow_mut().deref_mut(),
+            USB_SERIAL.borrow(cs).borrow_mut().deref_mut(),
+            HID.borrow(cs).borrow_mut().deref_mut(),
+        ) {
             if !usb_dev.poll(&mut [hid, serial]) {
                 return;
             }

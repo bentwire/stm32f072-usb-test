@@ -113,6 +113,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "digital-filter"
+version = "0.1.0"
+source = "git+https://github.com/bentwire/digital-filter.git#47339eff2af889565c4e87d54621c1606a39e589"
+dependencies = [
+ "generic-array 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "heapless 0.4.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "typenum 1.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "embedded-hal"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -292,7 +302,9 @@ dependencies = [
  "cortex-m 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-rt 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-rtfm 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cortex-m-rtfm-macros 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "cortex-m-semihosting 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "digital-filter 0.1.0 (git+https://github.com/bentwire/digital-filter.git)",
  "embedded-hal 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-halt 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "panic-semihosting 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -386,6 +398,7 @@ dependencies = [
 "checksum cortex-m-rtfm 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "fb1d7afa5da773bf144e92e4ff886b4ed252e767e2cc729880fb55b515606bc1"
 "checksum cortex-m-rtfm-macros 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "eb5caeeb7e8309eee746142f875b0edc125761ccaab2c6b991414e89ca58c444"
 "checksum cortex-m-semihosting 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "165f3f86f4d1031351a6c9dc8d5a3f8fae2050f9dd6ef925e3d675c232cc0e46"
+"checksum digital-filter 0.1.0 (git+https://github.com/bentwire/digital-filter.git)" = "<none>"
 "checksum embedded-hal 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "ee4908a155094da7723c2d60d617b820061e3b4efcc3d9e293d206a5a76c170b"
 "checksum generic-array 0.11.1 (registry+https://github.com/rust-lang/crates.io-index)" = "8107dafa78c80c848b71b60133954b4a58609a3a1a5f9af037ecc7f67280f369"
 "checksum generic-array 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)" = "3c0f28c2f5bfb5960175af447a2da7c18900693738343dc896ffbcabd9839592"

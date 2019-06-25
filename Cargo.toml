@@ -44,4 +44,8 @@ version = "0.4.3"
 [dependencies.usbd-serial]
 git = "https://github.com/mvirkkunen/usbd-serial"
 
+[dependencies.digital-filter]
+git = "https://github.com/bentwire/digital-filter.git"
 
+[dependencies.cortex-m-rtfm-macros]
+version = "0.4.3"
